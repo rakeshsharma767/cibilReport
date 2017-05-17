@@ -156,7 +156,7 @@ func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args
 	key := args[0] // name of Entity
 	fmt.Println("key is ")
 	fmt.Println(key)
-	iter, err := stub.RangeQueryState(key+"1", key+":")
+	iter, err := stub.RangeQueryState(key+"1", key+"3")
 	
 	defer iter.Close()
 	var test *[] byte
