@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"log"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"math"
+	 "encoding/binary"
 
 )
 //var myLogger = logging.MustGetLogger("digital_im")
@@ -207,14 +209,35 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	}
 
 	key := args[0] // name of Entity
+	
 	fmt.Println("key is ")
 	fmt.Println(key)
-	bytes, err := stub.GetState(args[0]+"1")
-	fmt.Println(bytes)
-	if err != nil {
-		fmt.Println("Error retrieving " + key)
-		return nil, errors.New("Error retrieving " + key)
+	trans := Transaction {}
+	tests  := []Transaction {trans}
+	var p *[]byte
+	for  i:=0; i>=0; i++ { 
+		bytes, err := stub.GetState(key+strconv.Itoa(i))
+		fmt.Println(bytes)
+		if err != nil {
+			fmt.Println("Error retrieving " + key)
+			return nil, errors.New("Error retrieving " + key)
+		}
+		err = json.Unmarshal(bytes, &trans)
+		p = &bytes
+		if err != nil {
+			fmt.Println("Error unmarshelling" + trans.PanNumber)
+			return nil, errors.New("Error retrieving " + key)
+		}
+		tests = append(tests,trans)
 	}
+	sum := 0.0
+	for i:=0;i<len(tests);i++ {
+		sum = sum + tests[i].Amount
+	}
+	var tt []byte
+	//tt=*p
+	tt=Float64bytes(sum)
+	p = &tt
 	/*
 	product := Product{}
 	err = json.Unmarshal(bytes, &product)
@@ -230,7 +253,13 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	}
 	fmt.Println(bytes)
 	*/
-	return bytes, nil
+	return *p, nil
+}
+func Float64bytes(float float64) []byte {
+    bits := math.Float64bits(float)
+    bytes := make([]byte, 8)
+    binary.LittleEndian.PutUint64(bytes, bits)
+    return bytes
 }
 func (t *SimpleChaincode2) readProduct(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
