@@ -5,9 +5,15 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+	"log"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	 "github.com/op/go-logging"
-	 "github.com/hyperledger/fabric/common/flogging"
+)
+
+var (
+    Trace   *log.Logger
+    Info    *log.Logger
+    Warning *log.Logger
+    Error   *log.Logger
 )
 
 //Product - Structure for transactions used in buy goods
@@ -42,7 +48,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 	if err != nil {
 		return nil, err
 	}
-
+	
 	return nil, nil
 }
 
@@ -148,18 +154,22 @@ func (t *SimpleChaincode) addTransaction(stub shim.ChaincodeStubInterface, args 
 return nil, nil
 }
 
+
+
 func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
-	logger = flogging.MustGetLogger("CIBIL")
 
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. expecting 1")
 	}
 
+	myLogger := shim.NewLogger("Read Transaction Logger");
+	myLogger.Info("***********************************Read Transaction Logger************************");
 	key := args[0] // name of Entity
-	logger.Warning("Key is "  + key)
 
+	myLogger.Info("Before get state " + key);
 	object,err := stub.GetState(key)
+	myLogger.Info("After get state " + key);
 	var test *[] byte
 	test  = &object
 //	defer iter.Close()
