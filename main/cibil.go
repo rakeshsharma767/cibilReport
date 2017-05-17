@@ -209,7 +209,7 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	key := args[0] // name of Entity
 	fmt.Println("key is ")
 	fmt.Println(key)
-	bytes, err := stub.GetState(args[0])
+	bytes, err := stub.GetState(args[0]+"1")
 	fmt.Println(bytes)
 	if err != nil {
 		fmt.Println("Error retrieving " + key)
