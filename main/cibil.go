@@ -129,7 +129,7 @@ func (t *SimpleChaincode) addTransaction(stub shim.ChaincodeStubInterface, args 
 		TransactionId : args[3],
 		Amount: amt,
 		Date: 		args[5],
-		InstitutionName: args[6]
+		InstitutionName: args[6],
 	}
 
 	bytes, err := json.Marshal(transaction)
@@ -141,7 +141,7 @@ func (t *SimpleChaincode) addTransaction(stub shim.ChaincodeStubInterface, args 
 	//compKey,err = stub.CreateCompositeKey(objectType string, b) (string, error)
 	fmt.Println("Error marshaling transaction"+transaction.PanNumber)
 	
-	err := stub.PutState(transaction.PanNumber, bytes)
+	err = stub.PutState(transaction.PanNumber, bytes)
 	if err != nil {
 		return nil, err
 	}
