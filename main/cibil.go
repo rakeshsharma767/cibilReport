@@ -157,11 +157,14 @@ func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args
 	fmt.Println("key is ")
 	fmt.Println(key)
 	iter, err := stub.RangeQueryState(key+"1", key+":")
+	
 	defer iter.Close()
+	var test *[] byte
 	for iter.HasNext() {
 		key, _,err := iter.Next()
 		object,err := stub.GetState(key)
 		fmt.Println(object);
+		test  = &object
 		if err != nil {
 			return nil, errors.New("Error Readig next ele 1")
 		}
@@ -170,7 +173,7 @@ func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args
 		fmt.Println("Error retrieving " + key)
 		return nil, errors.New("Error retrieving " + key)
 	}
-	return nil, nil
+	return *test, nil
 }
 
 
