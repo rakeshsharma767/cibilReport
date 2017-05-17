@@ -226,7 +226,7 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 		p = &bytes
 		if err != nil {
 			fmt.Println("Error unmarshelling" + trans.PanNumber)
-			return nil, errors.New("Error retrieving " + key)
+			return nil, errors.New("Error Unmarshelling " + key)
 		}
 		tests = append(tests,trans)
 	}
