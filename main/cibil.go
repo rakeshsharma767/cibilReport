@@ -124,7 +124,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 
 func (t *SimpleChaincode) addTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("adding transaction information")
-	if len(args) != 4 {
+	if len(args) < 4 {
 		return nil, errors.New("Incorrect Number of arguments.Expecting 4 for addTransaction")
 	}
 	amt, err := strconv.ParseFloat(args[4], 64)
@@ -170,8 +170,8 @@ func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args
 	myLogger.Info("Before get state " + key);
 	object,err := stub.GetState(key)
 	myLogger.Info("After get state " + key);
-	var test *[] byte
-	test  = &object
+	//var test *[] byte
+	//test  = &object
 //	defer iter.Close()
 
 
@@ -179,7 +179,7 @@ func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args
 		fmt.Println("Error retrieving " + key)
 		return nil, errors.New("Error retrieving " + key)
 	}
-	return *test, nil
+	return object, nil
 }
 
 
