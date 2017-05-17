@@ -10,13 +10,13 @@ import (
 
 //Product - Structure for transactions used in buy goods
 type Transaction struct {
-	PanNumber   string  'json:"pan"' 
-	TransactionType string 'json:"transaction_type"'
-	LoanId string 'json:"loanId"'
-	TransactionId string 'json:"transactionid"'
-	Amount float64 'json:"amount"'
-	Date string  'json:"date"'
-	InstitutionName string     'json:"bank"'
+	PanNumber   string  `json:"pan"` 
+	TransactionType string `json:"transaction_type"`
+	LoanId string `json:"loanId"`
+	TransactionId string `json:"transactionid"`
+	Amount float64 `json:"amount"`
+	Date string  `json:"date"`
+	InstitutionName string     `json:"bank"`
 }
 
 // SimpleChaincode example simple Chaincode implementation
