@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strconv"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+	 "github.com/op/go-logging"
+	 "github.com/hyperledger/fabric/common/flogging"
 )
 
 //Product - Structure for transactions used in buy goods
@@ -148,14 +150,14 @@ return nil, nil
 
 func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
+	logger = flogging.MustGetLogger("CIBIL")
 
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. expecting 1")
 	}
 
 	key := args[0] // name of Entity
-	fmt.Println("key is ")
-	fmt.Println(key)
+	logger.Warning("Key is "  + key)
 
 	object,err := stub.GetState(key)
 	var test *[] byte
