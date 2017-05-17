@@ -7,8 +7,9 @@ import (
 	"strconv"
 	"log"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"github.com/op/go-logging"
 )
-
+var myLogger = logging.MustGetLogger("digital_im")
 var (
     Trace   *log.Logger
     Info    *log.Logger
@@ -126,6 +127,7 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 
 func (t *SimpleChaincode) addTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("adding transaction information")
+	myLogger.Debug("*********adding transaction...")
 	if len(args) < 4 {
 		return nil, errors.New("Incorrect Number of arguments.Expecting 4 for addTransaction")
 	}
@@ -165,16 +167,16 @@ func (t *SimpleChaincode) readTransaction1(stub shim.ChaincodeStubInterface, arg
 		return nil, errors.New("Incorrect number of arguments. expecting 1")
 	}
 
-	myLogger := shim.NewLogger("Read Transaction Logger");
+	myLogger2 := shim.NewLogger("Read Transaction Logger");
 	infoLevel, _ := shim.LogLevel("INFO")
-	myLogger.SetLevel(infoLevel)
-	myLogger.Info("***********************************Read Transaction Logger************************");
+	myLogger2.SetLevel(infoLevel)
+	myLogger2.Info("***********************************Read Transaction Logger************************");
 	key := args[0] // name of Entity
 
-
-	myLogger.Info("Before get state " + key);
+	myLogger.Debug("*********...")
+	myLogger2.Info("Before get state " + key);
 	object,err := stub.GetState(key)
-	myLogger.Info("After get state " + key);
+	myLogger2.Info("After get state " + key);
 	//var test *[] byte
 	//test  = &object
 //	defer iter.Close()
