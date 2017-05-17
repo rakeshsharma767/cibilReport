@@ -156,7 +156,7 @@ return nil, nil
 
 
 
-func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode) readTransaction1(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
 
 	if len(args) != 1 {
@@ -183,6 +183,41 @@ func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args
 		return nil, errors.New("Error retrieving " + key)
 	}
 	return object, nil
+}
+
+
+func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("read() is running")
+
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. expecting 1")
+	}
+
+	key := args[0] // name of Entity
+	fmt.Println("key is ")
+	fmt.Println(key)
+	bytes, err := stub.GetState(args[0])
+	fmt.Println(bytes)
+	if err != nil {
+		fmt.Println("Error retrieving " + key)
+		return nil, errors.New("Error retrieving " + key)
+	}
+	/*
+	product := Product{}
+	err = json.Unmarshal(bytes, &product)
+	if err != nil {
+		fmt.Println("Error Unmarshaling customerBytes")
+		return nil, errors.New("Error Unmarshaling customerBytes")
+	}
+	
+	bytes, err = json.Marshal(product)
+	if err != nil {
+		fmt.Println("Error marshaling customer")
+		return nil, errors.New("Error marshaling customer")
+	}
+	fmt.Println(bytes)
+	*/
+	return bytes, nil
 }
 
 
