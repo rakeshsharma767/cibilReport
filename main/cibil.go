@@ -160,7 +160,7 @@ func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args
 	fmt.Println("key is ")
 	fmt.Println(key)
 	b := [1]string{"PanNumber"}//, transaction.TransactionType, transaction.LoanId,transaction.TransactionId}
-	coloredMarbleResultsIterator, err := GetStateByPartialCompositeKey("PanNumber", []string{args[0]})
+	coloredMarbleResultsIterator, err := stub.GetStateByPartialCompositeKey("PanNumber", []string{args[0]})
 	if err != nil {
 		return shim.Error(err.Error())
 	}
