@@ -64,6 +64,8 @@ func (t *SimpleChaincode2) Invoke(stub shim.ChaincodeStubInterface, function str
 		return t.write(stub, args)
 	} else if function == "addtransaction" {
 		return t.addTransaction(stub, args)
+	} else if function == "addproduct" {
+		return t.addProduct(stub, args)
 	}
 	fmt.Println("invoke did not find func: " + function)
 
@@ -256,6 +258,30 @@ func (t *SimpleChaincode2) readProduct(stub shim.ChaincodeStubInterface, args []
 	*/
 	return bytes, nil
 }
+func (t *SimpleChaincode) addProduct(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("adding product information")
+	if len(args) != 4 {
+		return nil, errors.New("Incorrect Number of arguments.Expecting 4 for addProduct")
+	}
+	amt, err := strconv.ParseFloat(args[1], 64)
+	
 
+	product := Product{
+		Name:   args[0],
+		Amount: amt,
+		Owner: args[2],
+		Productid: args[3],
+	}
+
+	bytes, err := json.Marshal(product)
+	if err != nil {
+		fmt.Println("Error marshaling product")
+		return nil, errors.New("Error marshaling product")
+	}
+
+	err = stub.PutState(product.Productid, bytes)
+	if err != nil {
+		return nil, err
+}
 
 
