@@ -137,11 +137,9 @@ func (t *SimpleChaincode) addTransaction(stub shim.ChaincodeStubInterface, args 
 		fmt.Println("Error marshaling transaction")
 		return nil, errors.New("Error marshaling transaction")
 	}
-	//b := [5]string{transaction.PanNumber, transaction.TransactionType, transaction.LoanId,transaction.TransactionId}
-	//compKey,err = stub.CreateCompositeKey(objectType string, b) (string, error)
 	fmt.Println("Error marshaling transaction"+transaction.PanNumber)
 	
-	err = stub.PutState(transaction.PanNumber, bytes)
+	err = stub.PutState(transaction.PanNumber+transaction.TransactionId, bytes)
 	if err != nil {
 		return nil, err
 	}
@@ -156,65 +154,24 @@ func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args
 	}
 
 	key := args[0] // name of Entity
-//	key2 := args[1]
 	fmt.Println("key is ")
 	fmt.Println(key)
-	b := [1]string{"PanNumber"}//, transaction.TransactionType, transaction.LoanId,transaction.TransactionId}
-	coloredMarbleResultsIterator, err := stub.GetStateByPartialCompositeKey("PanNumber", []string{args[0]})
-	if err != nil {
-		return shim.Error(err.Error())
-	}
-	
-	for i = 0; coloredMarbleResultsIterator.HasNext(); i++ {
-		responseRange, err := coloredMarbleResultsIterator.Next()
-		objectType, compositeKeyParts, err := stub.SplitCompositeKey(responseRange.Key)
-		
+	iter, err := stub.RangeQueryState(key+"1", key+":")
+	defer iter.Close()
+	for iter.HasNext() {
+		key, _,err := iter.Next()
+		object,err := stub.GetState(key)
+		fmt.Println(object);
 		if err != nil {
-			return shim.Error(err.Error())
+			return nil, errors.New("Error Readig next ele 1")
 		}
-		panNumber := compositeKeyParts[0]
-		fmt.Println(responseRange.Value+" PAN NUMBER" +panNumber);
-		
-//		TransactionType:= compositeKeyParts[0]
-//		LoanId:= compositeKeyParts[0]
-//		TransactionId:= compositeKeyParts[0]
-//		Amountamt:= compositeKeyParts[0]
-//		Date:= compositeKeyParts[0]
-//		InstitutionName:= compositeKeyParts[0]
-		
-//		returnedMarbleName := compositeKeyParts[1]
-//		fmt.Printf("- found a marble from index:%s color:%s name:%s\n", objectType, returnedColor, returnedMarbleName)
-
-		// Now call the transfer function for the found marble.
-		// Re-use the same function that is used to transfer individual marbles
-//		response := t.transferMarble(stub, []string{returnedMarbleName, newOwner})
-		// if the transfer failed break out of loop and return error
-//		if response.Status != shim.OK {
-//			return shim.Error("Transfer failed: " + response.Message)
-//		}
 	}
-//	bytes, err := stub.GetState(args[0])
-//	fmt.Println(bytes)
 	if err != nil {
 		fmt.Println("Error retrieving " + key)
 		return nil, errors.New("Error retrieving " + key)
 	}
-	/*
-	transaction := Product{}
-	err = json.Unmarshal(bytes, &transaction)
-	if err != nil {
-		fmt.Println("Error Unmarshaling customerBytes")
-		return nil, errors.New("Error Unmarshaling customerBytes")
-	}
-	
-	bytes, err = json.Marshal(transaction)
-	if err != nil {
-		fmt.Println("Error marshaling customer")
-		return nil, errors.New("Error marshaling customer")
-	}
-	fmt.Println(bytes)
-	*/
-	return bytes, nil
+	return nil, nil
 }
+
 
 
