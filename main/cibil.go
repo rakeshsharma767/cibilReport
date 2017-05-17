@@ -173,7 +173,7 @@ func (t *SimpleChaincode2) readTransaction1(stub shim.ChaincodeStubInterface, ar
 	myLogger2.Info("***********************************Read Transaction Logger************************");
 	key := args[0] // name of Entity
 
-	myLogger.Debug("*********...")
+//	myLogger.Debug("*********...")
 	myLogger2.Info("Before get state " + key);
 	object,err := stub.GetState(key)
 	myLogger2.Info("After get state " + key);
