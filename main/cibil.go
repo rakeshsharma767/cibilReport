@@ -126,7 +126,7 @@ func (t *SimpleChaincode) addTransaction(stub shim.ChaincodeStubInterface, args 
 		PanNumber:   args[0],
 		TransactionType : args[1],
 		LoanId : 	args[2],
-		TransactionId = args[3],
+		TransactionId : args[3],
 		Amount: amt,
 		Date: 		args[5],
 		InstitutionName: args[6]
@@ -141,10 +141,10 @@ func (t *SimpleChaincode) addTransaction(stub shim.ChaincodeStubInterface, args 
 	//compKey,err = stub.CreateCompositeKey(objectType string, b) (string, error)
 	fmt.Println("Error marshaling transaction"+transaction.PanNumber)
 	
-	err = stub.PutState(transaction., bytes)
+	err := stub.PutState(transaction.PanNumber, bytes)
 	if err != nil {
 		return nil, err
-}
+	}
 return nil, nil
 }
 
