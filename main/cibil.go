@@ -10,7 +10,7 @@ import (
 
 //Product - Structure for transactions used in buy goods
 type Transaction struct {
-	PanNumber   string  'json:"pan"'
+	PanNumber   string  'json:"pan"' 
 	TransactionType string 'json:"transaction_type"'
 	LoanId string 'json:"loanId"'
 	TransactionId string 'json:"transactionid"'
