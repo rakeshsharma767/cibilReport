@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"log"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
-	"github.com/op/go-logging"
+
 )
-var myLogger = logging.MustGetLogger("digital_im")
+//var myLogger = logging.MustGetLogger("digital_im")
 var (
     Trace   *log.Logger
     Info    *log.Logger
@@ -28,19 +28,19 @@ type Transaction struct {
 	InstitutionName string     `json:"bank"`
 }
 
-// SimpleChaincode example simple Chaincode implementation
-type SimpleChaincode struct {
+// SimpleChaincode2 example simple Chaincode implementation
+type SimpleChaincode2 struct {
 }
 
 func main() {
-	err := shim.Start(new(SimpleChaincode))
+	err := shim.Start(new(SimpleChaincode2))
 	if err != nil {
 		fmt.Printf("Error starting Simple chaincode: %s", err)
 	}
 }
 
 // Init resets all the things
-func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	}
@@ -54,7 +54,7 @@ func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string
 }
 
 // Invoke isur entry point to invoke a chaincode function
-func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("invoke is running " + function)
 
 	// Handle different functions
@@ -71,7 +71,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 }
 
 // Query is our entry point for queries
-func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
 
 	// Handle different functions
@@ -88,7 +88,7 @@ func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function strin
 }
 
 // write - invoke function to write key/value pair
-func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var key, value string
 	var err error
 	fmt.Println("running write()")
@@ -107,7 +107,7 @@ func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string)
 }
 
 // read - query function to read key/value pair
-func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) read(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	var key, jsonResp string
 	var err error
 
@@ -125,9 +125,9 @@ func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) 
 	return valAsbytes, nil
 }
 
-func (t *SimpleChaincode) addTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) addTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("adding transaction information")
-	myLogger.Debug("*********adding transaction...")
+	errors.New("testing")
 	if len(args) < 4 {
 		return nil, errors.New("Incorrect Number of arguments.Expecting 4 for addTransaction")
 	}
@@ -160,7 +160,7 @@ return nil, nil
 
 
 
-func (t *SimpleChaincode) readTransaction1(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) readTransaction1(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
 
 	if len(args) != 1 {
@@ -190,7 +190,7 @@ func (t *SimpleChaincode) readTransaction1(stub shim.ChaincodeStubInterface, arg
 }
 
 
-func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
 
 	if len(args) != 1 {
@@ -223,7 +223,7 @@ func (t *SimpleChaincode) readTransaction(stub shim.ChaincodeStubInterface, args
 	*/
 	return bytes, nil
 }
-func (t *SimpleChaincode) readProduct(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) readProduct(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
 
 	if len(args) != 1 {
