@@ -28,6 +28,13 @@ type Transaction struct {
 	InstitutionName string     `json:"bank"`
 }
 
+type Product struct {
+	Name   string  `json:"name"`
+	Amount float64 `json:"amount"`
+	Owner string  `json:"owner"`
+	Productid string     `json:"productid"`
+}
+
 // SimpleChaincode2 example simple Chaincode implementation
 type SimpleChaincode2 struct {
 }
@@ -258,7 +265,7 @@ func (t *SimpleChaincode2) readProduct(stub shim.ChaincodeStubInterface, args []
 	*/
 	return bytes, nil
 }
-func (t *SimpleChaincode) addProduct(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) addProduct(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("adding product information")
 	if len(args) != 4 {
 		return nil, errors.New("Incorrect Number of arguments.Expecting 4 for addProduct")
@@ -282,6 +289,7 @@ func (t *SimpleChaincode) addProduct(stub shim.ChaincodeStubInterface, args []st
 	err = stub.PutState(product.Productid, bytes)
 	if err != nil {
 		return nil, err
+	}
+	return nil, nil
 }
-
 
