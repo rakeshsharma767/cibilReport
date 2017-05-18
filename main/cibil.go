@@ -9,6 +9,7 @@ import (
 	"log"
 	"math"
 	"strconv"
+	"strings"
 )
 
 //var myLogger = logging.MustGetLogger("digital_im")
@@ -26,7 +27,7 @@ type Transaction struct {
 	LoanId          string  `json:"LoanId"`
 	TransactionId   string  `json:"TransactionId"`
 	Amount          float64 `json:"Amount"`
-	TransactionDate            string  `json:"TransactionDate"`
+	TransactionDate string  `json:"TransactionDate"`
 	InstitutionName string  `json:"InstitutionName"`
 }
 
@@ -38,9 +39,10 @@ type Product struct {
 }
 
 type Response2 struct {
-    Page   int      `json:"Page"`
-    Fruits []string `json:"Fruits"`
+	Page   int      `json:"Page"`
+	Fruits []string `json:"Fruits"`
 }
+
 // SimpleChaincode2 example simple Chaincode implementation
 type SimpleChaincode2 struct {
 }
@@ -156,7 +158,7 @@ func (t *SimpleChaincode2) addTransaction(stub shim.ChaincodeStubInterface, args
 		LoanId:          args[2],
 		TransactionId:   args[3],
 		Amount:          amt,
-		TransactionDate:            args[5],
+		TransactionDate: args[5],
 		InstitutionName: args[6],
 	}
 
@@ -199,39 +201,99 @@ func (t *SimpleChaincode2) readTransaction1(stub shim.ChaincodeStubInterface, ar
 	return object, nil
 }
 
-
-
 func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	 log := "Start of the read process"
+	log := "Start of the read process"
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. expecting 1")
 	}
 	key := args[0]
-	
-	//trans := Transaction{}
-	
+
 	log = log + " key is " + key + " "
-	bytes, err := stub.GetState(args[0] + "1")
-	if err != nil {
-		 
+	inputs := [100]string{}
+	for count := 0; count < 100; count++ {
+		bytes, err := stub.GetState(args[0] + strconv.Itoa(count))
+		if err != nil {
+			break
+		}
+		inputs[count] = string(bytes)
+
 	}
-	log = log + string(bytes);
-	
-	str := `{"Page": 1, "Fruits": ["apple", "peach"]}`
-	res := Response2{}
-	//err = json.Unmarshal([]byte("`" + string(bytes) + "`"), &trans)
-	err = json.Unmarshal([]byte(str), &res)
-	 
-	
-	log = log + " error is " + err.Error() +"  Result Object is " + string(res.Page) + " Byte Array of string " + "`" + string(bytes) + "`"
-	
+	sumOfEMIs := 0.0
+	sumOfOs := 0.0
+	loanAmt := 0.0
+	score := 600.0
+
+	for j := 0; j < len(inputs); j++ {
+		str := inputs[j]
+		fmt.Printf("\n")
+		fmt.Printf("\n")
+		fmt.Printf(str)
+		str = strings.Replace(str, "{", "", -1)
+		str = strings.Replace(str, "}", "", -1)
+		values := strings.Split(str, ",")
+		transaction := Transaction{}
+		for i := 0; i < len(values); i++ {
+			replacedStr := strings.Replace(values[i], "\"", "", -1)
+			tokens := strings.Split(replacedStr, ":")
+			//fmt.Printf("\nKey " + tokens[0] + " " + " Value " + tokens[1])
+
+			if "TransactionType" == tokens[0] {
+				transaction.TransactionType = tokens[1]
+				fmt.Printf("\n Transaction type !!!!!!!" + transaction.TransactionType)
+			}
+
+			if "PanNumber" == tokens[0] {
+				transaction.PanNumber = tokens[1]
+				fmt.Printf("\n PAN Number !!!!!!!" + transaction.PanNumber)
+			}
+
+			if "Amount" == tokens[0] {
+				amt, err := strconv.ParseFloat(tokens[1], 64)
+				transaction.Amount = amt
+				if err != nil {
+
+				}
+			}
+
+			if "TransactionId" == tokens[0] {
+				transaction.TransactionId = tokens[1]
+				fmt.Printf("\n TransactionId !!!!!!!" + transaction.TransactionId)
+			}
+		}
+		if transaction.TransactionType == "EMI" {
+			sumOfEMIs = sumOfEMIs + transaction.Amount
+		} else if transaction.TransactionType == "OUTSTANDING" {
+			sumOfOs = sumOfOs + transaction.Amount
+		} else if transaction.TransactionType == "LOAN" {
+			loanAmt = transaction.Amount
+		}
+
+	}
+	fmt.Printf("sum of Emi %f", sumOfEMIs)
+	fmt.Printf(" sum of os %f", sumOfOs)
+	fmt.Printf(" loan amt %f", loanAmt)
+
+	diff := sumOfEMIs - sumOfOs
+	percentage := (diff / loanAmt) * 100
+
+	spread := 300 * (percentage / 100)
+	score = score + spread
+
+	if score > 900 {
+		score = 900
+	} else if score < 300 {
+		score = 300
+	}
+	fmt.Printf("score: %f", score)
+
 	if true {
 		return nil, errors.New(log)
 	}
 
-	return bytes, nil
-}
+	scoreBytes := Float64bytes(score)
 
+	return scoreBytes, nil
+}
 
 func Float64bytes(float float64) []byte {
 	bits := math.Float64bits(float)
