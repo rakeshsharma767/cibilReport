@@ -38,8 +38,8 @@ type Product struct {
 }
 
 type Response2 struct {
-    Page   int      `json:"page"`
-    Fruits []string `json:"fruits"`
+    Page   int      `json:"Page"`
+    Fruits []string `json:"Fruits"`
 }
 // SimpleChaincode2 example simple Chaincode implementation
 type SimpleChaincode2 struct {
@@ -217,7 +217,7 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	}
 	log = log + string(bytes);
 	
-	str := `{"page": 1, "fruits": ["apple", "peach"]}`
+	str := `{"Page": 1, "Fruits": ["apple", "peach"]}`
 	res := Response2{}
 	//err = json.Unmarshal([]byte("`" + string(bytes) + "`"), &trans)
 	err = json.Unmarshal([]byte(str), &res)
