@@ -213,7 +213,7 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	}
 	log = log + string(bytes);
 	
-	err = json.Unmarshal(bytes, trans)
+	err = json.Unmarshal(bytes, &trans)
 	
 	log = log + " error is " + err.Error() +"  Result Object is " + trans.PanNumber 
 	
