@@ -192,7 +192,6 @@ func (t *SimpleChaincode2) readTransaction1(stub shim.ChaincodeStubInterface, ar
 	myLogger2.Info("Before get state " + key)
 	object, err := stub.GetState(key)
 	myLogger2.Info("After get state " + key)
-	//	defer iter.Close()
 
 	if err != nil {
 		fmt.Println("Error retrieving " + key)
@@ -286,12 +285,9 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	}
 	fmt.Printf("score: %f", score)
 
+	scoreBytes := []byte(strconv.FormatFloat(score, 'f', -1, 64))
+	//scoreBytes := Float64bytes(score)
 
-	scoreBytes := Float64bytes(score)
-	
-	if true {
-		return nil, errors.New(strconv.FormatFloat(score, 'f', -1, 64))
-	}
 
 	return scoreBytes, nil
 }
