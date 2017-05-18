@@ -21,13 +21,13 @@ var (
 
 //Product - Structure for transactions used in buy goods
 type Transaction struct {
-	PanNumber       string  `json:"pan"`
-	TransactionType string  `json:"transaction_type"`
-	LoanId          string  `json:"loanId"`
-	TransactionId   string  `json:"transactionid"`
-	Amount          float64 `json:"amount"`
-	Date            string  `json:"date"`
-	InstitutionName string  `json:"bank"`
+	PanNumber       string  `json:"PanNumber"`
+	TransactionType string  `json:"TransactionType"`
+	LoanId          string  `json:"LoanId"`
+	TransactionId   string  `json:"TransactionId"`
+	Amount          float64 `json:"Amount"`
+	TransactionDate            string  `json:"TransactionDate"`
+	InstitutionName string  `json:"InstitutionName"`
 }
 
 type Product struct {
@@ -156,7 +156,7 @@ func (t *SimpleChaincode2) addTransaction(stub shim.ChaincodeStubInterface, args
 		LoanId:          args[2],
 		TransactionId:   args[3],
 		Amount:          amt,
-		Date:            args[5],
+		TransactionDate:            args[5],
 		InstitutionName: args[6],
 	}
 
@@ -221,6 +221,7 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	res := Response2{}
 	//err = json.Unmarshal([]byte("`" + string(bytes) + "`"), &trans)
 	err = json.Unmarshal([]byte(str), &res)
+	 
 	
 	log = log + " error is " + err.Error() +"  Result Object is " + string(res.Page) + " Byte Array of string " + "`" + string(bytes) + "`"
 	
