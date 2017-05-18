@@ -184,15 +184,12 @@ func (t *SimpleChaincode2) readTransaction1(stub shim.ChaincodeStubInterface, ar
 	infoLevel, _ := shim.LogLevel("INFO")
 	myLogger2.SetLevel(infoLevel)
 	myLogger2.Info("***********************************Read Transaction Logger************************");
-	key := args[0] // name of Entity
+	key := args[0]
 
-//	myLogger.Debug("*********...")
 	myLogger2.Info("Before get state " + key);
 	object,err := stub.GetState(key)
 	myLogger2.Info("After get state " + key);
-	//var test *[] byte
-	//test  = &object
-//	defer iter.Close()
+	//	defer iter.Close()
 
 
 	if err != nil {
@@ -225,10 +222,10 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 			return nil, errors.New("Error retrieving " + key)
 		}
 		
-		/*if(true){
+		if(true){
 			return nil,errors.New(string(bytes))
 		}
-		err = json.Unmarshal(bytes, trans)*/
+		err = json.Unmarshal(bytes, trans)
 		p = &bytes
 		/*if err != nil {
 			fmt.Println("Error unmarshelling" + trans.PanNumber)
@@ -241,24 +238,8 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 		sum = sum + tests[i].Amount
 	}
 	var tt []byte
-	//tt=*p
 	tt=Float64bytes(sum)
 	p = &tt
-	/*
-	product := Product{}
-	err = json.Unmarshal(bytes, &product)
-	if err != nil {
-		fmt.Println("Error Unmarshaling customerBytes")
-		return nil, errors.New("Error Unmarshaling customerBytes")
-	}
-	
-	bytes, err = json.Marshal(product)
-	if err != nil {
-		fmt.Println("Error marshaling customer")
-		return nil, errors.New("Error marshaling customer")
-	}
-	fmt.Println(bytes)
-	*/
 	return *p, nil
 }
 func Float64bytes(float float64) []byte {
@@ -283,21 +264,6 @@ func (t *SimpleChaincode2) readProduct(stub shim.ChaincodeStubInterface, args []
 		fmt.Println("Error retrieving " + key)
 		return nil, errors.New("Error retrieving " + key)
 	}
-	/*
-	product := Product{}
-	err = json.Unmarshal(bytes, &product)
-	if err != nil {
-		fmt.Println("Error Unmarshaling customerBytes")
-		return nil, errors.New("Error Unmarshaling customerBytes")
-	}
-	
-	bytes, err = json.Marshal(product)
-	if err != nil {
-		fmt.Println("Error marshaling customer")
-		return nil, errors.New("Error marshaling customer")
-	}
-	fmt.Println(bytes)
-	*/
 	return bytes, nil
 }
 func (t *SimpleChaincode2) addProduct(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
