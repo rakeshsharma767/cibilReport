@@ -204,12 +204,18 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	}
 	key := args[0]
 	
-	log = log + " key is " + key
+	trans := Transaction{}
+	
+	log = log + " key is " + key + " "
 	bytes, err := stub.GetState(args[0] + "1")
 	if err != nil {
 		 
 	}
 	log = log + string(bytes);
+	
+	err = json.Unmarshal(bytes, trans)
+	
+	log = log + " error is " + err.Error() +"  Result Object is " + trans.PanNumber
 	
 	if true {
 		return nil, errors.New(log)
