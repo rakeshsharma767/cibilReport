@@ -37,6 +37,10 @@ type Product struct {
 	Productid string  `json:"productid"`
 }
 
+type Response2 struct {
+    Page   int      `json:"page"`
+    Fruits []string `json:"fruits"`
+}
 // SimpleChaincode2 example simple Chaincode implementation
 type SimpleChaincode2 struct {
 }
@@ -204,7 +208,7 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	}
 	key := args[0]
 	
-	trans := Transaction{}
+	//trans := Transaction{}
 	
 	log = log + " key is " + key + " "
 	bytes, err := stub.GetState(args[0] + "1")
@@ -213,9 +217,12 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	}
 	log = log + string(bytes);
 	
-	err = json.Unmarshal([]byte("`" + string(bytes) + "`"), &trans)
+	str := `{"page": 1, "fruits": ["apple", "peach"]}`
+	res := Response2{}
+	//err = json.Unmarshal([]byte("`" + string(bytes) + "`"), &trans)
+	err = json.Unmarshal([]byte(str), &res)
 	
-	log = log + " error is " + err.Error() +"  Result Object is " + trans.PanNumber + " Byte Array of string " + "`" + string(bytes) + "`"
+	log = log + " error is " + err.Error() +"  Result Object is " + string(res.Page) + " Byte Array of string " + "`" + string(bytes) + "`"
 	
 	if true {
 		return nil, errors.New(log)
