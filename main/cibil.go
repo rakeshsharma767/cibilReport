@@ -346,15 +346,15 @@ func (t *SimpleChaincode2) addProduct(stub shim.ChaincodeStubInterface, args []s
 func (t *SimpleChaincode2) readOneTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
 
-	if len(args) != 1 {
+	if len(args) != 2 {
 		return nil, errors.New("Incorrect number of arguments. expecting 1")
 	}
 	key := args[0]
-	bytes, err := stub.GetState(args[0] + "1")
+	bytes, err := stub.GetState(args[0] + args[1])
 	fmt.Println(bytes)
 	if err != nil {
 		fmt.Println("Error retrieving " + key)
-		return nil, errors.New("Error retrieving " + key)
+		return nil, errors.New("Error retrieving " + key+args[1])
 	}
 
 	return bytes, nil
