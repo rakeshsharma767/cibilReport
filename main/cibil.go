@@ -207,7 +207,7 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	log = log + " key is " + key
 	bytes, err := stub.GetState(args[0] + "1")
 	if err != nil {
-		
+		 
 	}
 	log = log + string(bytes);
 	
