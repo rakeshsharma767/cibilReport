@@ -288,6 +288,10 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 
 
 	scoreBytes := Float64bytes(score)
+	
+	if true {
+		return nil, errors.New(strconv.FormatFloat(score, 'E', -1, 64))
+	}
 
 	return scoreBytes, nil
 }
