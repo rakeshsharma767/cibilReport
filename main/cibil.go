@@ -92,6 +92,8 @@ func (t *SimpleChaincode2) Query(stub shim.ChaincodeStubInterface, function stri
 		return t.readTransaction(stub, args)
 	} else if function == "readproduct" {
 		return t.readProduct(stub, args)
+	}  else if function == "readonetransaction  " {
+		return t.readOneTransaction(stub, args)
 	}
 	fmt.Println("query did not find func: " + function)
 
@@ -322,3 +324,22 @@ func (t *SimpleChaincode2) addProduct(stub shim.ChaincodeStubInterface, args []s
 	return nil, nil
 }
 
+func (t *SimpleChaincode2) readOneTransaction (stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	fmt.Println("read() is running")
+
+	if len(args) != 1 {
+		return nil, errors.New("Incorrect number of arguments. expecting 1")
+	}
+
+	key := args[0] // name of Entity
+	fmt.Println("key is ")
+	fmt.Println(key)
+	bytes, err := stub.GetState(args[0]+"1")
+	fmt.Println(bytes)
+	if err != nil {
+		fmt.Println("Error retrieving " + key)
+		return nil, errors.New("Error retrieving " + key)
+	}
+	
+	return bytes, nil
+}
