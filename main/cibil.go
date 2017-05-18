@@ -1,40 +1,40 @@
 package main
 
 import (
+	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
-	"strconv"
-	"log"
 	"github.com/hyperledger/fabric/core/chaincode/shim"
+	"log"
 	"math"
-	 "encoding/binary"
-
+	"strconv"
 )
+
 //var myLogger = logging.MustGetLogger("digital_im")
 var (
-    Trace   *log.Logger
-    Info    *log.Logger
-    Warning *log.Logger
-    Error   *log.Logger
+	Trace   *log.Logger
+	Info    *log.Logger
+	Warning *log.Logger
+	Error   *log.Logger
 )
 
 //Product - Structure for transactions used in buy goods
 type Transaction struct {
-	PanNumber   string  `json:"pan"` 
-	TransactionType string `json:"transaction_type"`
-	LoanId string `json:"loanId"`
-	TransactionId string `json:"transactionid"`
-	Amount float64 `json:"amount"`
-	Date string  `json:"date"`
-	InstitutionName string     `json:"bank"`
+	PanNumber       string  `json:"pan"`
+	TransactionType string  `json:"transaction_type"`
+	LoanId          string  `json:"loanId"`
+	TransactionId   string  `json:"transactionid"`
+	Amount          float64 `json:"amount"`
+	Date            string  `json:"date"`
+	InstitutionName string  `json:"bank"`
 }
 
 type Product struct {
-	Name   string  `json:"name"`
-	Amount float64 `json:"amount"`
-	Owner string  `json:"owner"`
-	Productid string     `json:"productid"`
+	Name      string  `json:"name"`
+	Amount    float64 `json:"amount"`
+	Owner     string  `json:"owner"`
+	Productid string  `json:"productid"`
 }
 
 // SimpleChaincode2 example simple Chaincode implementation
@@ -58,7 +58,7 @@ func (t *SimpleChaincode2) Init(stub shim.ChaincodeStubInterface, function strin
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return nil, nil
 }
 
@@ -92,7 +92,7 @@ func (t *SimpleChaincode2) Query(stub shim.ChaincodeStubInterface, function stri
 		return t.readTransaction(stub, args)
 	} else if function == "readproduct" {
 		return t.readProduct(stub, args)
-	}  else if function == "readonetransaction" {
+	} else if function == "readonetransaction" {
 		return t.readOneTransaction(stub, args)
 	}
 	fmt.Println("query did not find func: " + function)
@@ -145,15 +145,14 @@ func (t *SimpleChaincode2) addTransaction(stub shim.ChaincodeStubInterface, args
 		return nil, errors.New("Incorrect Number of arguments.Expecting 4 for addTransaction")
 	}
 	amt, err := strconv.ParseFloat(args[4], 64)
-	
 
 	transaction := Transaction{
-		PanNumber:   args[0],
-		TransactionType : args[1],
-		LoanId : 	args[2],
-		TransactionId : args[3],
-		Amount: amt,
-		Date: 		args[5],
+		PanNumber:       args[0],
+		TransactionType: args[1],
+		LoanId:          args[2],
+		TransactionId:   args[3],
+		Amount:          amt,
+		Date:            args[5],
 		InstitutionName: args[6],
 	}
 
@@ -162,16 +161,14 @@ func (t *SimpleChaincode2) addTransaction(stub shim.ChaincodeStubInterface, args
 		fmt.Println("Error marshaling transaction")
 		return nil, errors.New("Error marshaling transaction")
 	}
-	fmt.Println("Error marshaling transaction"+transaction.PanNumber)
-	
+	fmt.Println("Error marshaling transaction" + transaction.PanNumber)
+
 	err = stub.PutState(transaction.PanNumber+transaction.TransactionId, bytes)
 	if err != nil {
 		return nil, err
 	}
-return nil, nil
+	return nil, nil
 }
-
-
 
 func (t *SimpleChaincode2) readTransaction1(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
@@ -180,17 +177,16 @@ func (t *SimpleChaincode2) readTransaction1(stub shim.ChaincodeStubInterface, ar
 		return nil, errors.New("Incorrect number of arguments. expecting 1")
 	}
 
-	myLogger2 := shim.NewLogger("Read Transaction Logger");
+	myLogger2 := shim.NewLogger("Read Transaction Logger")
 	infoLevel, _ := shim.LogLevel("INFO")
 	myLogger2.SetLevel(infoLevel)
-	myLogger2.Info("***********************************Read Transaction Logger************************");
+	myLogger2.Info("***********************************Read Transaction Logger************************")
 	key := args[0]
 
-	myLogger2.Info("Before get state " + key);
-	object,err := stub.GetState(key)
-	myLogger2.Info("After get state " + key);
+	myLogger2.Info("Before get state " + key)
+	object, err := stub.GetState(key)
+	myLogger2.Info("After get state " + key)
 	//	defer iter.Close()
-
 
 	if err != nil {
 		fmt.Println("Error retrieving " + key)
@@ -200,53 +196,34 @@ func (t *SimpleChaincode2) readTransaction1(stub shim.ChaincodeStubInterface, ar
 }
 
 
-func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
-	fmt.Println("read() is running")
 
+func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+	 log := "Start of the read process"
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. expecting 1")
 	}
-
-	key := args[0] // name of Entity
+	key := args[0]
 	
-	fmt.Println("key is ")
-	fmt.Println(key)
-	trans := Transaction {}
-	tests  := []Transaction {trans}
-	var p *[]byte
-	for  i:=0; i>=0; i++ { 
-		bytes, err := stub.GetState(key+strconv.Itoa(i))
-		fmt.Println(bytes)
-		if err != nil {
-			fmt.Println("Error retrieving " + key)
-			return nil, errors.New("Error retrieving " + key)
-		}
+	log = log + " key is " + key
+	bytes, err := stub.GetState(args[0] + "1")
+	if err != nil {
 		
-		if(true){
-			return nil,errors.New(string(bytes))
-		}
-		err = json.Unmarshal(bytes, trans)
-		p = &bytes
-		/*if err != nil {
-			fmt.Println("Error unmarshelling" + trans.PanNumber)
-			return nil, errors.New("Error Unmarshelling " + key+ ":"+err.Error())
-		}*/
-		tests = append(tests,trans)
 	}
-	sum := 0.0
-	for i:=0;i<len(tests);i++ {
-		sum = sum + tests[i].Amount
+	log = log + string(bytes);
+	
+	if true {
+		return nil, errors.New(log)
 	}
-	var tt []byte
-	tt=Float64bytes(sum)
-	p = &tt
-	return *p, nil
+
+	return bytes, nil
 }
+
+
 func Float64bytes(float float64) []byte {
-    bits := math.Float64bits(float)
-    bytes := make([]byte, 8)
-    binary.LittleEndian.PutUint64(bytes, bits)
-    return bytes
+	bits := math.Float64bits(float)
+	bytes := make([]byte, 8)
+	binary.LittleEndian.PutUint64(bytes, bits)
+	return bytes
 }
 func (t *SimpleChaincode2) readProduct(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
@@ -272,12 +249,11 @@ func (t *SimpleChaincode2) addProduct(stub shim.ChaincodeStubInterface, args []s
 		return nil, errors.New("Incorrect Number of arguments.Expecting 4 for addProduct")
 	}
 	amt, err := strconv.ParseFloat(args[1], 64)
-	
 
 	product := Product{
-		Name:   args[0],
-		Amount: amt,
-		Owner: args[2],
+		Name:      args[0],
+		Amount:    amt,
+		Owner:     args[2],
 		Productid: args[3],
 	}
 
@@ -294,22 +270,19 @@ func (t *SimpleChaincode2) addProduct(stub shim.ChaincodeStubInterface, args []s
 	return nil, nil
 }
 
-func (t *SimpleChaincode2) readOneTransaction (stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
+func (t *SimpleChaincode2) readOneTransaction(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 	fmt.Println("read() is running")
 
 	if len(args) != 1 {
 		return nil, errors.New("Incorrect number of arguments. expecting 1")
 	}
-
-	key := args[0] // name of Entity
-	fmt.Println("key is ")
-	fmt.Println(key)
-	bytes, err := stub.GetState(args[0]+"1")
+	key := args[0]
+	bytes, err := stub.GetState(args[0] + "1")
 	fmt.Println(bytes)
 	if err != nil {
 		fmt.Println("Error retrieving " + key)
 		return nil, errors.New("Error retrieving " + key)
 	}
-	
+
 	return bytes, nil
 }
