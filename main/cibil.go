@@ -286,9 +286,6 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 	}
 	fmt.Printf("score: %f", score)
 
-	if true {
-		return nil, errors.New(log)
-	}
 
 	scoreBytes := Float64bytes(score)
 
