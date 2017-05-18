@@ -225,15 +225,15 @@ func (t *SimpleChaincode2) readTransaction(stub shim.ChaincodeStubInterface, arg
 			return nil, errors.New("Error retrieving " + key)
 		}
 		
-		if(true){
-		return nil,errors.New(string(bytes))
+		/*if(true){
+			return nil,errors.New(string(bytes))
 		}
-		err = json.Unmarshal(bytes, trans)
+		err = json.Unmarshal(bytes, trans)*/
 		p = &bytes
-		if err != nil {
+		/*if err != nil {
 			fmt.Println("Error unmarshelling" + trans.PanNumber)
 			return nil, errors.New("Error Unmarshelling " + key+ ":"+err.Error())
-		}
+		}*/
 		tests = append(tests,trans)
 	}
 	sum := 0.0
